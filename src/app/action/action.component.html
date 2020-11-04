@@ -1,0 +1,36 @@
+<div class="action" *ngIf="actions">
+   <div class="button" *ngFor="let action of actions.response_handlers">
+      <button (click)="sendChange(action)" [title]="action.description" [disabled]="words.length ==0">{{action.action_name}}</button>
+   </div>
+   <div class="word" *ngFor="let word of words">
+      <table>
+         <tr>
+            <td><button (click)="removeWord(word)">x</button></td>
+            <td class="td-attr">id: {{word.id}}</td>
+            <td class="td-longer-attr"><input type="checkbox" [(ngModel)]="word.deleted" [checked]="word.deleted" />deleted</td>
+            <td>
+               <label> ln:
+                  <input [(ngModel)]="word.line" type="number" size="4"/>
+               </label>
+            </td>
+            <td class="td-word">{{word.text}}</td>
+            <td class="td-word" *ngIf="word.edited_text">edited text: {{word.edited_text}}</td>
+            <td class="td-word" *ngIf="word.earlier_version">v0: {{word.earlier_version}}</td>
+            <td class="td-word" *ngIf="word.overwrites_word">over: {{word.overwrites_word}}</td>
+            <td class="td-word">tp_id: {{word.tp_id}}</td>
+            <td class="td-word" *ngIf="word.part_text">part: {{word.part_text}}</td>
+         </tr>
+      </table>
+   </div>
+   <div class="message-board" *ngIf="actions.result && words.length == 0">{{actions.result}}</div>
+</div>
+<div class="requirement" *ngIf="response_handler">
+   <h4>Add extra information in order to {{response_handler.action_name}}</h4>
+   <div *ngFor="let requirement of response_handler.requirements">
+      <label>{{requirement.name}}
+         <input [type]="requirement.type == 'boolean' ? 'checkbox' : 'text'" [(ngModel)]="requirement.input" />
+      </label>
+   </div>
+   <button (click)="sendChange(response_handler)">send</button>
+   <button (click)="resetResponseHandler()">cancel</button>
+</div>

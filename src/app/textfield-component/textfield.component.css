@@ -1,0 +1,44 @@
+.textfield {
+  background-color: #DADADA;
+}
+.textfield .deleted {
+  fill: grey;
+  opacity: 0.3;
+}
+.textfield .search_found {
+  fill: #e20000;
+  opacity: 0.3;
+}
+.textfield .even_highlight {
+  fill: #e2fa00;
+  opacity: 0.3;
+}
+.textfield .uneven_highlight {
+  fill: #FF00FF;
+  opacity: 0.3;
+}
+.textfield .border {
+  stroke: #e2fa00;
+  stroke-width:5;
+  opacity: 0.3;
+}
+.textfield .unhighlighted {
+  opacity: 0.0;
+}
+.textfield .howered_line {
+  fill: #e2fa00;
+  opacity: 0.3;
+}
+
+.textfield .same_word {
+  fill: #c9fac5;
+  opacity: 0.3;
+}
+
+.text_fadeout {
+  fill: #a4a4a4;
+}
+
+.hover {
+  transform: scale(1.5);
+}

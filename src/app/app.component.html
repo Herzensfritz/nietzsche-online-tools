@@ -1,0 +1,18 @@
+<h1>{{title}}</h1>
+<action-tab [send]="send" [actions]="actions"></action-tab>
+<div id="navi">
+   <button (click)="setZoomFactor(zoomFactor+0.5)">+</button>
+   <button (click)="setZoomFactor(zoomFactor-0.5)">-</button>
+   <button (click)="setZoomFactor(2)">{{zoomFactor * 50}}%</button>
+   <label>find:<input [(ngModel)]="findText" (keydown.enter)="resetFindText()" type="string"/></label>
+   <button (click)="resetFindText()" (keydown.enter)="resetFindText()" *ngIf="words">{{getNumFoundWords()}}/{{words.length}}</button>
+</div>
+<div id="page" *ngIf="svg" [attr.height]="max_page_height">
+   <div id="margin">
+      <margin-field [text_field]="svg.text_field" [lines]="svg_lines" [zoomFactor]="zoomFactor"></margin-field>
+   </div>
+   <div id="gap"></div>
+   <div id="textfield">
+      <text-field [image]="svg" [findText]="findText" [words]="words" [zoomFactor]="zoomFactor"></text-field>
+   </div>
+</div>

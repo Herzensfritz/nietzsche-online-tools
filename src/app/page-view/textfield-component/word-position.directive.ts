@@ -1,6 +1,6 @@
 import { Directive, HostListener, Input } from '@angular/core';
-import { PageViewService } from '../services/field-interaction.service';
-import { Word } from '../models/models';
+import { PageViewService } from '../page-view.service';
+import { Word } from '../models';
 
 @Directive({
    selector: '[interactedWord]'

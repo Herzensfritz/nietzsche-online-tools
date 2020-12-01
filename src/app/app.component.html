@@ -1,13 +1,17 @@
-<h1>{{title}}</h1>
-<action-tab [send]="send" [actions]="actions"></action-tab>
+<h3>{{title}}</h3>
+<action-tab [send]="send" [removeWord]="removeWord" [actions]="actions" [words]="selectedWords"></action-tab>
 <div id="navi">
-   <button (click)="setZoomFactor(zoomFactor+0.5)">+</button>
-   <button (click)="setZoomFactor(zoomFactor-0.5)">-</button>
-   <button (click)="setZoomFactor(2)">{{zoomFactor * 50}}%</button>
-   <label>find:<input [(ngModel)]="findText" (keydown.enter)="resetFindText()" type="string"/></label>
-   <button (click)="resetFindText()" (keydown.enter)="resetFindText()" *ngIf="words">{{getNumFoundWords()}}/{{words.length}}</button>
+   <button (click)="setZoomFactor(zoomFactor+0.2)">+</button>
+   <button (click)="setZoomFactor(zoomFactor-0.2)">-</button>
+   <button (click)="setZoomFactor(1)">{{zoomFactor * 100}}%</button>
+   <label>find:<input [(ngModel)]="findText" (change)="updateWords()" (keydown.enter)="addWords()" type="string"/></label>
+   <button (click)="resetFindText()" *ngIf="words">{{ words.length }} words</button>
+   <button (click)="removeWords()"  *ngIf="selectedWords.length > 0">remove selected {{selectedWords.length}} word(s)</button>
+   <input type="checkbox" (change)="toggleShowTextFieldOnly()" [checked]="savedTextfield !== null" />show margins
+   <input type="checkbox" [(ngModel)]="positionWords" [checked]="positionWords" *ngIf="selectedWords.length > 0"/>{{ selectedWords.length > 0 ? 'position selected' : '' }}
+   <input type="number" size="4" (change)="resetPoints()" [(ngModel)]="offset" *ngIf="selectedWords.length > 0"/>
 </div>
-<div id="page" *ngIf="svg" [attr.height]="max_page_height">
+<div id="page" [ngStyle]="{'overflow': assignHiddenClass()}" *ngIf="svg" [attr.height]="max_page_height">
    <div id="margin">
       <margin-field [text_field]="svg.text_field" [lines]="svg_lines" [zoomFactor]="zoomFactor"></margin-field>
    </div>

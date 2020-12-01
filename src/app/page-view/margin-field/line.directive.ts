@@ -1,6 +1,6 @@
 import { Directive, HostListener, Input } from '@angular/core';
-import { Line } from '../models/models';
-import { PageViewService } from '../services/field-interaction.service';
+import { Line } from '../models';
+import { PageViewService } from '../page-view.service';
 
 
 @Directive({
@@ -14,14 +14,14 @@ export class LineDirective {
    @HostListener('click') onMouseClick() {
       // alert(this.word);
       this.lineservice.updateInfo(this.interactedLine);
-      this.lineservice.onClickService(this.interactedLine);
+      this.lineservice.onLineClickService(this.interactedLine);
    }
 
    @HostListener('mouseenter') onMouseEnter() {
-     this.lineservice.mouseEnterService(this.interactedLine);
+     this.lineservice.mouseEnterLineService(this.interactedLine);
    }
 
    @HostListener('mouseleave') onMouseLeave() {
-     this.lineservice.mouseLeaveService(this.interactedLine);
+     this.lineservice.mouseLeaveLineService(this.interactedLine);
    }
 }

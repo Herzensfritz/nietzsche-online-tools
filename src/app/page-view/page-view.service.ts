@@ -1,7 +1,6 @@
-import { Line, Word } from '../models/models';
+import { Line, Word } from './models';
 import {EventEmitter, Injectable} from '@angular/core';
 import {Subject} from 'rxjs';
-//import {NavigationServiceService} from "./navigation-service.service";
 
 @Injectable()
 export class PageViewService {
@@ -25,32 +24,27 @@ export class PageViewService {
   updateWordInfo(information: Word) {
     this.wordInformationSource.next(information);
   }
-
   public onWordClickService(word: Word) {
     if ( word !== this.oldClickedWord) {
       this.onClickedWord.emit(word);
       this.oldClickedWord = word;
     }
   }
-
-  public onClickService(line: Line) {
+  public onLineClickService(line: Line) {
     if ( line !== this.oldClickedLine) {
       this.onClickedLine.emit(line);
       this.oldClickedLine = line;
     }
   }
-
-  public mouseEnterService(line: Line) {
+  public mouseEnterLineService(line: Line) {
     this.onHoveredLine.emit(line);
   }
-
-  public mouseLeaveService(line: Line) {
+  public mouseLeaveLineService(line: Line) {
       this.offHoveredLine.emit(line);
   }
   public mouseEnterWordService(word: Word) {
     this.onHoveredWord.emit(word);
   }
-
   public mouseLeaveWordService(word: Word) {
       this.offHoveredWord.emit(word);
   }

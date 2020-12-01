@@ -1,12 +1,13 @@
 <svg xmlns:svg="http://www.w3.org/2000/svg"
      xmlns="http://www.w3.org/2000/svg"
      xmlns:xhtml="http://www.w3.org/1999/xhtml"
-   [attr.viewBox]="viewBox" [attr.height]="margin_height*zoomFactor" [attr.width]="margin_width*zoomFactor"
+   [attr.viewBox]="viewBox" [attr.height]="margin_height*local_zoom*zoomFactor" [attr.width]="margin_width*local_zoom*zoomFactor"
     class = 'marginfield'>
    <svg:g *ngFor="let line of lines">
       <svg:g *ngIf="line.id % 2 == 0">
          <svg:rect [attr.x]="line_x-1" [attr.y]="line.bottom+1-line_height" 
                    [attr.height]="line_height" [attr.width]="line.id > 9 ? line_length + line_length/2 : line_length"
+                   [ngStyle]="assignStyle(line, hoveredWord, hoveredLine, getHoverStatus(line))"
                    [ngClass]="{ 
                      'marginfield unhighlighted': true,
                      'marginfield highlight': highlight(line)  }" > </svg:rect>

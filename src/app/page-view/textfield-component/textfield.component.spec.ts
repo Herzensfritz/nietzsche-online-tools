@@ -1,7 +1,6 @@
 import { TestBed, async } from '@angular/core/testing';
-import { AppComponent } from '../app.component';
 
-describe('AppComponent', () => {
+/*describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [
@@ -28,4 +27,4 @@ describe('AppComponent', () => {
     const compiled = fixture.debugElement.nativeElement;
     expect(compiled.querySelector('.content span').textContent).toContain('svg-test-app app is running!');
   });
-});
+});*/

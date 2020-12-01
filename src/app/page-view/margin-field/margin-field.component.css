@@ -8,24 +8,17 @@
 
 .marginfield .unhighlighted {
    fill: white;
+   opacity: 0.0;
 }
 .marginfield .highlight {
    fill: yellow;
-   opacity: 0.5;
-}
-.marginfield .even_highlight {
-  fill: #e2fa00;
-  opacity: 0.3;
-}
-.marginfield .highlight {
-  background-color: #FF00FF;
+   opacity: 0.3;
 }
 .marginfield .border {
   stroke: #e2fa00;
   stroke-width:5;
   opacity: 0.3;
 }
-
 .marginfield .howered_line {
   fill: #fa301c;
   opacity: 0.3;

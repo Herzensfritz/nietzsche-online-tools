@@ -19,6 +19,16 @@
             <td class="td-word" *ngIf="word.overwrites_word">over: {{word.overwrites_word}}</td>
             <td class="td-word">tp_id: {{word.tp_id}}</td>
             <td class="td-word" *ngIf="word.part_text">part: {{word.part_text}}</td>
+            <td>
+               <label> left:
+                  <input [(ngModel)]="word.left" type="number" size="4"/>
+               </label>
+            </td>
+            <td>
+               <label> top:
+                  <input [(ngModel)]="word.top" type="number" size="4"/>
+               </label>
+            </td>
          </tr>
       </table>
    </div>

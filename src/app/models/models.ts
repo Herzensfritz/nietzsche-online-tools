@@ -1,27 +1,16 @@
+import { Image, Line, IdWord } from '../page-view/models';
+
 export interface Actions {
    target_file: string;
    date_stamp: number;
    response_handlers: ResponseHandler[];
    result?: string;
 }
-export interface Image {
-   width: number;
-   height: number;
-   file_name: string;
-   URL: string;
-   text_field: TextField;
-   transform?: string;
-}
-export interface Line {
-   id: number;
-   bottom: number;
-   top: number;
-}
 export interface MyData {
    title: string;
    number: string;
    svg: Image;
-   words: Word[];
+   words: EditableWord[];
    lines: Line[];
    actions: Actions;
 }
@@ -29,7 +18,7 @@ export interface Response {
    target_file: string;
    date_stamp: number;
    response_handler: ResponseHandler;
-   words: Word[];
+   words: EditableWord[];
 }
 export interface ResponseHandler{
    action_name: string;
@@ -48,7 +37,7 @@ export interface TextField {
    top: number;
    bottom: number;
 }
-export interface Word { 
+export interface EditableWord extends IdWord { 
    id: number;
    text: string;
    edited_text?: string;
@@ -57,7 +46,8 @@ export interface Word {
    width: number;
    height: number;
    line: number;
-   tp_id: string;
+   tp_id?: string;
+   fp_id?: string;
    deleted: boolean;
    transform?: string; 
    earlier_version?: string;

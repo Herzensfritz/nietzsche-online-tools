@@ -5,15 +5,15 @@
   fill: grey;
   opacity: 0.3;
 }
-.textfield .search_found {
+.textfield .highlight_red {
   fill: #e20000;
   opacity: 0.3;
 }
-.textfield .even_highlight {
+.textfield .highlight_yellow {
   fill: #e2fa00;
   opacity: 0.3;
 }
-.textfield .uneven_highlight {
+.textfield .highlight_magenta {
   fill: #FF00FF;
   opacity: 0.3;
 }

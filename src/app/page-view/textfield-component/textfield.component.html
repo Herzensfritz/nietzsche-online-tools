@@ -1,0 +1,17 @@
+<svg xmlns:svg="http://www.w3.org/2000/svg"
+     xmlns="http://www.w3.org/2000/svg"
+     xmlns:xhtml="http://www.w3.org/1999/xhtml"
+   [attr.viewBox]="viewBox" [attr.height]="image_height*local_zoom*zoomFactor" [attr.width]="image_width*local_zoom*zoomFactor"
+    class = 'textfield'>
+  <svg:g *ngIf="image">
+    <image [attr.xlink:href]="image.URL" [attr.href]="image.secondaryURL" [attr.x]="imageSpec.x" [attr.y]="imageSpec.y" [attr.height]="imageSpec.height" [attr.width]="imageSpec.width"/>
+  </svg:g>
+   <svg:g *ngFor="let word of words">
+      <svg:rect [interactedWord]="word"
+                [ngStyle]="assignStyle(word, hoveredWord, hoveredLine, getHoverStatus(word))"
+                [ngClass]="assignClass(word)"
+                [attr.x]="word.left" [attr.y]="word.top" [attr.height]="word.height" [attr.width]="word.width" [attr.transform]="word.transform">
+         <title *ngIf="word">{{word.text}} {{ word.edited_text != null ? '>' + word.edited_text : '' }}</title>
+      </svg:rect>
+   </svg:g>
+</svg>

@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import {Actions, Requirement, Response, ResponseHandler, Word} from '../models/models';
-import { PageViewService } from '../services/field-interaction.service';
-import { DataService } from '../services/data.service';
+import {Actions, Requirement, Response, ResponseHandler, EditableWord} from '../models/models';
+import { PageViewService } from '../page-view/page-view.service';
 
 @Component({
   selector: 'action-tab',
@@ -11,29 +10,14 @@ import { DataService } from '../services/data.service';
 export class ActionComponent implements OnInit {
    @Input() actions: Actions;
    @Input() send: (response: Response) => void;
-   words: Word[] = [];
+   @Input() removeWord: (word: EditableWord) => void;
+   @Input() words: EditableWord[];
    response_handler: ResponseHandler; 
 
-   constructor( private wordservice: PageViewService) { 
-   }
+   constructor( ) { }
 
-   ngOnInit() {
-      this.wordservice.onClickedWord.subscribe(
-         (changedWord: Word ) => { this.addWord(changedWord); }
-      );
-   }
+   ngOnInit() { }
 
-   private addWord(word: Word){
-      this.disposeOldResultMessage();
-      if (this.words.indexOf(word) == -1){
-         this.words.push(word);
-      }
-   }
-
-   private removeWord(word: Word){
-      this.words = this.words.filter(item =>item !== word)
-      this.disposeOldResultMessage();
-   }
    private resetResponseHandler(){
       this.response_handler = null;
    }
@@ -47,7 +31,6 @@ export class ActionComponent implements OnInit {
          let response: Response = { 'target_file': this.actions.target_file, 'date_stamp': this.actions.date_stamp,
                                  'response_handler': response_handler, 'words': this.words }
          this.disposeOldResultMessage();
-         this.words = [];
          this.send(response);
       }
    }

@@ -1,0 +1,20 @@
+<div id="page" *ngIf="first_image">
+   <div id="margin">
+      <margin-field [text_field]="first_image.text_field" [lines]="first_lines" [assignStyle]="assignStyle"
+                    [zoomFactor]="zoomFactor" [max_height]="max_height"></margin-field>
+   </div>
+   <div id="gap"></div>
+   <div id="textfield">
+      <text-field [image]="first_image" [findText]="findText" [words]="first_words" [zoomFactor]="zoomFactor" 
+                  [max_height]="max_height" [assignClass]="assignClass" [assignStyle]="assignStyle"></text-field>
+   </div>
+   <div id="gap"></div>
+   <div id="textfield" *ngIf="second_image && second_words">
+      <text-field [image]="second_image" [findText]="findText" [words]="second_words" [zoomFactor]="zoomFactor"
+                  [max_height]="max_height" [assignClass]="assignClass" [assignStyle]="assignStyle"></text-field>
+   </div>
+   <div id="margin" *ngIf="second_image && second_lines">
+      <margin-field [text_field]="second_image.text_field" [lines]="second_lines" [assignStyle]="assignStyle"
+                    [zoomFactor]="zoomFactor" [max_height]="max_height"></margin-field>
+   </div>
+</div>

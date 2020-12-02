@@ -12,6 +12,8 @@ export interface MyData {
    svg: Image;
    words: EditableWord[];
    lines: Line[];
+   faksimile?: Image;
+   faksimile_positions?: EditableWord[];
    actions: Actions;
 }
 export interface Response {
@@ -48,6 +50,7 @@ export interface EditableWord extends IdWord {
    line: number;
    tp_id?: string;
    fp_id?: string;
+   old_id?: number;
    deleted: boolean;
    transform?: string; 
    earlier_version?: string;

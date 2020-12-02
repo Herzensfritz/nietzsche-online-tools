@@ -6,7 +6,12 @@
       <table>
          <tr>
             <td><button (click)="removeWord(word)">x</button></td>
-            <td class="td-attr">id: {{word.id}}</td>
+            <td class="td-attr" *ngIf="word.tp_id">id: {{word.id}}</td>
+            <td class="td-attr" *ngIf="word.fp_id">
+               <select (change)="updateWord(word, $event.target.value)">
+                  <option *ngFor="let id of getWordIds()" [selected]="id === word.id" [ngValue]="id">{{id}}</option>
+               </select>
+            </td>
             <td class="td-longer-attr"><input type="checkbox" [(ngModel)]="word.deleted" [checked]="word.deleted" />deleted</td>
             <td>
                <label> ln:
@@ -17,7 +22,8 @@
             <td class="td-word" *ngIf="word.edited_text">edited text: {{word.edited_text}}</td>
             <td class="td-word" *ngIf="word.earlier_version">v0: {{word.earlier_version}}</td>
             <td class="td-word" *ngIf="word.overwrites_word">over: {{word.overwrites_word}}</td>
-            <td class="td-word">tp_id: {{word.tp_id}}</td>
+            <td class="td-word" *ngIf="word.tp_id">tp_id: {{word.tp_id}}</td>
+            <td class="td-word" *ngIf="word.fp_id">fp_id: {{word.fp_id}}</td>
             <td class="td-word" *ngIf="word.part_text">part: {{word.part_text}}</td>
             <td>
                <label> left:

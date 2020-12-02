@@ -37,4 +37,21 @@ export class ActionComponent implements OnInit {
    private disposeOldResultMessage(){
       this.actions.result = null;
    }
+   private updateWord(wordA: EditableWord, new_id: number){
+      wordA.old_id = wordA.id;
+      wordA.id = Number(new_id);
+   }
+   private getWordIds(): Number[] {
+      let ids = [];
+      for (var i = 0; i < this.words.length; i++){
+         if (ids.indexOf(this.words[i].id) == -1) {
+            ids.push(this.words[i].id); 
+         }
+         if (this.words[i]['old_id'] != null && ids.indexOf(this.words[i].old_id) == -1) {
+            ids.push(this.words[i].old_id); 
+         }
+      }
+      return ids
+   }
 }
+

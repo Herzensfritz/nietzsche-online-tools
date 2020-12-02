@@ -7,9 +7,14 @@
    <label>find:<input [(ngModel)]="findText" (change)="updateWords()" (keydown.enter)="addWords()" type="string"/></label>
    <button (click)="resetFindText()" *ngIf="words">{{ words.length }} words</button>
    <button (click)="removeWords()"  *ngIf="selectedWords.length > 0">remove selected {{selectedWords.length}} word(s)</button>
-   <input type="checkbox" (change)="toggleShowTextFieldOnly()" [checked]="savedTextfield !== null" />show margins
-   <input type="checkbox" [(ngModel)]="positionWords" [checked]="positionWords" *ngIf="selectedWords.length > 0"/>{{ selectedWords.length > 0 ? 'position selected' : '' }}
-   <input type="number" size="4" (change)="resetPoints()" [(ngModel)]="offset" *ngIf="selectedWords.length > 0"/>
+   <input type="checkbox" *ngIf="faksimile" [(ngModel)]="showFaksimile" [checked]="showFaksimile" />show faksimile
+   <span *ngIf="!showFaksimile">
+      <input type="checkbox" (change)="toggleShowTextFieldOnly()" [checked]="savedTextfield !== null" />show margins
+      <span *ngIf="selectedWords.length > 0">
+         <input type="checkbox" [(ngModel)]="positionWords" [checked]="positionWords"/> position selected
+         <input type="number" size="4" (change)="resetPoints()" [(ngModel)]="offset"/>
+      </span>
+   </span>
 </div>
 <div id="page" [ngStyle]="{'overflow': assignHiddenClass()}" *ngIf="svg" [attr.height]="max_page_height">
    <div id="margin">
@@ -17,6 +22,10 @@
    </div>
    <div id="gap"></div>
    <div id="textfield">
-      <text-field [image]="svg" [findText]="findText" [words]="words" [zoomFactor]="zoomFactor"></text-field>
+      <text-field [image]="svg" [findText]="findText" [words]="words" [zoomFactor]="zoomFactor" [assignClass]="assignClass"></text-field>
+   </div>
+   <div id="gap"></div>
+   <div id="textfield" *ngIf="faksimile && showFaksimile">
+      <text-field [image]="faksimile" [findText]="findText" [words]="faksimile_words" [zoomFactor]="zoomFactor"></text-field>
    </div>
 </div>

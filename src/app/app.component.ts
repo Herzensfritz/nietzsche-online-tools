@@ -31,12 +31,16 @@ export class AppComponent implements OnInit {
    positionWords: boolean = false;
    svg_lines: Line[];
    svg: Image;
+   faksimile: Image;
    selectedWords: EditableWord[] = [];
    title = this.app_title
    showActions: boolean = true;
+   showFaksimile: boolean = false;
    savedTextfield: TextField = null;
    words: EditableWord[] = [];
+   faksimile_words: EditableWord[];
    tmpWords: EditableWord[] = [];
+   tmpFaksimileWords: EditableWord[] = [];
    zoomFactor: number = 1;
    offset: number = 10;
    KEY_CODE =  { 'ArrowRight': new Point(this.offset, 0), 
@@ -49,12 +53,7 @@ export class AppComponent implements OnInit {
    ngOnInit() {
       this.max_page_height = screen.availHeight - 400;
       this.dataService.getHttpJSON().subscribe(mydata => {
-         this.actions = mydata.actions
-         this.svg = mydata.svg;
-         this.svg_lines = mydata.lines;
-         this.words = mydata.words;
-         this.tmpWords = this.words.slice();
-         this.title = this.app_title + ": " + mydata.title + ", " + mydata.number;
+         this.updateData(mydata);
       })
       this.route.queryParams.subscribe(params => {
          this.findText = params['find'];
@@ -67,6 +66,12 @@ export class AppComponent implements OnInit {
       if (this.selectedWords.indexOf(word) == -1){
          this.selectedWords.push(word);
       }
+   }
+   assignClass: externalAssignClass = (currentWord: EditableWord, hoveredWord: EditableWord, hoveredLine: Line): string => {
+      if (this.showFaksimile || hoveredWord != null || hoveredLine != null) {
+         return 'textfield unhighlighted'
+      }
+      return (currentWord.id % 2 == 0) ? 'textfield highlight_magenta' : 'textfield highlight_yellow';
    }
    private assignHiddenClass() {
       return (this.selectedWords.length > 0 && this.positionWords) ? 'hidden': 'auto' ;
@@ -87,13 +92,19 @@ export class AppComponent implements OnInit {
    send = (response: Response): void => {
       this.selectedWords = [];
       this.dataService.send(response).subscribe(mydata =>{
+         this.updateData(mydata);
+      });
+   }
+   private updateData(mydata: MyData) {
          this.actions = mydata.actions
          this.svg = mydata.svg;
          this.svg_lines = mydata.lines;
          this.words = mydata.words;
+         this.faksimile = mydata.faksimile;
+         this.faksimile_words = mydata.faksimile_positions
          this.tmpWords = this.words.slice();
+         this.tmpFaksimileWords = this.faksimile_words.slice();
          this.title = this.app_title + ": " + mydata.title + ", " + mydata.number;
-      });
    }
    private resetFindText() {
       this.findText = null;
@@ -108,8 +119,11 @@ export class AppComponent implements OnInit {
       if (this.findText != null && this.findText != ''){
          this.words = [];
          this.words = this.tmpWords.filter(word => word.text.match(this.findText) || (word.edited_text != null && word.edited_text.match(this.findText)));
+         this.faksimile_words = [];
+         this.faksimile_words = this.tmpFaksimileWords.filter(word => word.text.match(this.findText) || (word.edited_text != null && word.edited_text.match(this.findText)));
       } else if (this.tmpWords.length > 0) {
          this.words = this.tmpWords.slice();
+         this.faksimile_words = this.tmpFaksimileWords.slice();
       }
    }
    private setZoomFactor(newZoomFactor: number) {

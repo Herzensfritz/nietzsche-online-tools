@@ -1,16 +1,15 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { LineDirective } from './margin-field/line.directive';
 import { MarginFieldComponent } from './margin-field/margin-field.component';
 import { TextFieldComponent} from './textfield-component/textfield.component';
-import { WordPositionDirective } from './textfield-component/word-position.directive';
+import { InteractedDirective } from './interacted.directive';
 import { PageViewComponent } from './page-view.component';
+import { PageViewService } from './page-view.service';
 
 @NgModule({
    declarations: [
-    LineDirective,
-      WordPositionDirective,
+      InteractedDirective,
       MarginFieldComponent,
       TextFieldComponent,
       PageViewComponent
@@ -18,8 +17,11 @@ import { PageViewComponent } from './page-view.component';
    imports: [
     CommonModule
    ],
+   providers: [
+      PageViewService
+   ],
    exports: [
-    MarginFieldComponent,
+      MarginFieldComponent,
       TextFieldComponent,
       PageViewComponent
    ]

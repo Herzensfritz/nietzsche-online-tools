@@ -4,14 +4,30 @@
    [attr.viewBox]="viewBox" [attr.height]="image_height*local_zoom*zoomFactor" [attr.width]="image_width*local_zoom*zoomFactor"
     class = 'textfield'>
   <svg:g *ngIf="image">
-    <image [attr.xlink:href]="image.URL" [attr.href]="image.secondaryURL" [attr.x]="imageSpec.x" [attr.y]="imageSpec.y" [attr.height]="imageSpec.height" [attr.width]="imageSpec.width"/>
+    <!--
+      'xlink:href' is deprecated in SVG2 (see https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/xlink:href).
+      However, some browsers do not support 'href', therefore we use both 'xlink:href' and 'href'.
+      -->
+    <image [attr.xlink:href]="imageSpec.URL" [attr.href]="imageSpec.URL" (error)="updateImageProperties(imageSpec.secondaryURL)"
+           [attr.x]="imageSpec.x" [attr.y]="imageSpec.y" [attr.height]="imageSpec.height" [attr.width]="imageSpec.width"/>
   </svg:g>
    <svg:g *ngFor="let word of words">
-      <svg:rect [interactedWord]="word"
+      <svg:rect [interactedObject]="word" [identity]="identity" [container]="container"
                 [ngStyle]="assignStyle(word, hoveredWord, hoveredLine, getHoverStatus(word))"
                 [ngClass]="assignClass(word)"
                 [attr.x]="word.left" [attr.y]="word.top" [attr.height]="word.height" [attr.width]="word.width" [attr.transform]="word.transform">
-         <title *ngIf="word">{{word.text}} {{ word.edited_text != null ? '>' + word.edited_text : '' }}</title>
+         <title *ngIf="!useExtendedTooltip && word">{{ word.edited_text != null ? '> ' + word.edited_text : word.text }}</title>
+      </svg:rect>
+      <svg:g *ngIf="word.deletion_path">
+         <path #pathRef [ngClass]="assignClass(word, pathRef.localName)" [attr.d]="word.deletion_path"/>
+      </svg:g>
+   </svg:g>
+   <svg:g *ngFor="let foreignText of foreign_texts">
+      <svg:rect [interactedObject]="foreignText"
+                [ngStyle]="assignStyle(foreignText, hoveredWord, hoveredLine, getHoverStatus(foreignText))"
+                [ngClass]="assignClass(foreignText)"
+                [attr.x]="foreignText.left" [attr.y]="foreignText.top" [attr.height]="foreignText.height" [attr.width]="foreignText.width" [attr.transform]="foreignText.transform">
+         <title *ngIf="!useExtendedTooltip && foreignText">{{foreignText.text}}, {{ foreignText.pen }}</title>
       </svg:rect>
    </svg:g>
 </svg>

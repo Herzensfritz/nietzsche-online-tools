@@ -2,6 +2,9 @@
    <div class="button" *ngFor="let action of actions.response_handlers">
       <button (click)="sendChange(action)" [title]="action.description" [disabled]="words.length ==0">{{action.action_name}}</button>
    </div>
+   <select *ngIf="actions.pages" (change)="changePage($event.target.value)">
+      <option *ngFor="let page of actions.pages" [selected]="page == actions.target_file" [ngValue]="page">{{page}}</option>
+   </select>
    <div class="word" *ngFor="let word of words">
       <table>
          <tr>
@@ -25,6 +28,13 @@
             <td class="td-word" *ngIf="word.tp_id">tp_id: {{word.tp_id}}</td>
             <td class="td-word" *ngIf="word.fp_id">fp_id: {{word.fp_id}}</td>
             <td class="td-word" *ngIf="word.part_text">part: {{word.part_text}}</td>
+            <td class="td-word" *ngIf="word.deletion_path">path: {{word.deletion_path}}</td>
+            <td class="td-word" *ngIf="word.paths_near_word" (change)="addDeletionPath(word, $event.target.value)">
+               <select>
+                  <option [selected]="true" [value]=""></option>
+                  <option *ngFor="let path of word.paths_near_word">{{path}}</option>
+               </select>
+            </td>
             <td>
                <label> left:
                   <input [(ngModel)]="word.left" type="number" size="4"/>

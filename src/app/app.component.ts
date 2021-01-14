@@ -1,11 +1,14 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import wordData from '../assets/test.json';
-import {MyData, Response, EditableWord} from './models/models';
+import {MyData, Response, ResponseHandler, EditableWord} from './models/models';
 import { PageViewService } from './page-view/page-view.service';
 import { HIGHTLIGHT_CASES} from './page-view/highlight_status';
-import { externalAssignClass, externalAssignStyle, Image, TextField, Line, Word } from './page-view/models';
+import { externalAssignClass, externalAssignStyle, Image, Identifier, TextField, Line, Word } from './page-view/models';
 import { DataService } from './services/data.service';
+
+const WORD_CORRESPONDANCE: string = 'faksimile/transkription word correspondance'
+
 
 class Point {
    left: number;
@@ -32,16 +35,23 @@ export class AppComponent implements OnInit {
    svg_lines: Line[];
    svg: Image;
    faksimile: Image;
+   faksimile_words: EditableWord[];
+   faksimile_lines: Line[];
+   potentialDoubleLines: Line[];
+   potentialDoubleLineId: Identifier;
+   potentialDoubleWords: EditableWord[];
+   potentialDoubleWordId: Identifier;
    selectedWords: EditableWord[] = [];
    title = this.app_title
    showActions: boolean = true;
    showFaksimile: boolean = false;
    savedTextfield: TextField = null;
    words: EditableWord[] = [];
-   faksimile_words: EditableWord[];
+   current_task: string;
    tmpWords: EditableWord[] = [];
    tmpFaksimileWords: EditableWord[] = [];
-   zoomFactor: number = 1;
+   highlightSelected: Identifier[] = [];
+   zoomFactor: number = 2;
    offset: number = 10;
    KEY_CODE =  { 'ArrowRight': new Point(this.offset, 0), 
       'ArrowUp':  new Point(0, this.offset*-1),
@@ -68,6 +78,9 @@ export class AppComponent implements OnInit {
       }
    }
    assignClass: externalAssignClass = (currentWord: EditableWord, hoveredWord: EditableWord, hoveredLine: Line): string => {
+      if (this.potentialDoubleWordId != null && this.potentialDoubleWordId != '' && currentWord.id == this.potentialDoubleWordId){
+         return 'text_field highlight_magenta'
+      }
       if (this.showFaksimile || hoveredWord != null || hoveredLine != null) {
          return 'textfield unhighlighted'
       }
@@ -95,16 +108,8 @@ export class AppComponent implements OnInit {
          this.updateData(mydata);
       });
    }
-   private updateData(mydata: MyData) {
-         this.actions = mydata.actions
-         this.svg = mydata.svg;
-         this.svg_lines = mydata.lines;
-         this.words = mydata.words;
-         this.faksimile = mydata.faksimile;
-         this.faksimile_words = mydata.faksimile_positions
-         this.tmpWords = this.words.slice();
-         this.tmpFaksimileWords = this.faksimile_words.slice();
-         this.title = this.app_title + ": " + mydata.title + ", " + mydata.number;
+   disposeOldResultMessage = (timeout: number = 0): void => {
+      setTimeout(()=>{this.actions.result = null}, timeout);
    }
    private resetFindText() {
       this.findText = null;
@@ -115,6 +120,31 @@ export class AppComponent implements OnInit {
       'ArrowDown': new Point(0, this.offset ),
       'ArrowLeft': new Point(this.offset*-1, 0)};
    }
+   private updateData(mydata: MyData) {
+         this.actions = mydata.actions
+         this.svg = mydata.svg;
+         this.svg_lines = mydata.lines;
+         this.words = mydata.words;
+         this.faksimile = mydata.faksimile;
+         this.faksimile_words = mydata.faksimile_positions
+         this.faksimile_lines = mydata.faksimile_lines
+         this.tmpWords = this.words.slice();
+         this.tmpFaksimileWords = this.faksimile_words.slice();
+         this.title = this.app_title + ": " + mydata.title + ", " + mydata.number;
+         if (this.actions.result != null && this.actions.result != undefined
+         && this.actions.result.includes('succeeded!') && !this.actions.result.includes('WARNING')){ 
+            this.disposeOldResultMessage(2000);
+         }
+         if (!this.current_task && this.actions && this.actions.tasks.length > 0){
+            this.current_task = this.actions.tasks[0]
+         }
+         if (this.current_task != null){
+            this.showFaksimile = (this.current_task == WORD_CORRESPONDANCE)
+            if (this.current_task == WORD_CORRESPONDANCE){
+               this.updatePotentialDoubles()
+            }
+         }
+   }
    private updateWords() {
       if (this.findText != null && this.findText != ''){
          this.words = [];
@@ -124,6 +154,57 @@ export class AppComponent implements OnInit {
       } else if (this.tmpWords.length > 0) {
          this.words = this.tmpWords.slice();
          this.faksimile_words = this.tmpFaksimileWords.slice();
+      }
+   }
+   private updatePotentialDoubles() {
+      this.potentialDoubleLines = [];
+      let uneven_lines = this.faksimile_lines.filter(line =><number>(line.id) % 2 == 1);
+      for (const line of uneven_lines.values()){
+         let words_on_line = this.faksimile_words.filter(word =>word.line == line.id)
+         let unique_words = [...new Set(Array.from(words_on_line, word=>word.text))]
+         if (words_on_line.length > unique_words.length){
+            this.potentialDoubleLines.push(line)
+         }
+      }
+      if (this.potentialDoubleLines.length > 0){
+         this.updatePotentialDoubleWords(this.potentialDoubleLines[0].id);
+      }
+   }
+   private updatePotentialDoubleWords(line: Identifier) {
+      this.potentialDoubleWords = [];
+      this.potentialDoubleWordId = '';
+      this.potentialDoubleLineId = line;
+      let words_on_line = this.faksimile_words.filter(word =>word.line == line)
+      let unique_words = [...new Set(Array.from(words_on_line, word=>word.text))]
+      if (words_on_line.length > unique_words.length){
+         for(const text of unique_words.values()){
+            let words_with_text = words_on_line.filter(word =>word.text == text)
+            if (words_with_text.length > 1){
+               words_with_text.forEach(word =>this.potentialDoubleWords.push(word));
+            }
+         }
+      }
+   }
+   private showPotentialDoubles(id: Identifier){
+      this.potentialDoubleWordId = id;
+      if (this.potentialDoubleWordId != null && this.potentialDoubleWordId != ''){
+         this.words.filter(word =>word.id == this.potentialDoubleWordId).concat(
+            this.faksimile_words.filter(word =>word.id == this.potentialDoubleWordId)).forEach(
+               word => {this.wordservice.onHoverService(word, { visible: true, layerX: -1, layerY: -1, clientX: -1, clientY: -1});
+                        this.wordservice.offHoverService(word, { visible: true, layerX: -1, layerY: -1, clientX: -1, clientY: -1})});
+         
+      }
+   }
+   private setTask(task: string){
+      this.current_task = task;
+   }
+   private taskDone(){
+      if (this.current_task){
+         let response_handler: ResponseHandler = { action_name: 'set task done', description: 'set task done'};
+         let response: Response = { 'target_file': this.actions.target_file, 'date_stamp': this.actions.date_stamp,
+                                 'response_handler': response_handler, 'task': this.current_task, 'words': [] }
+         this.current_task = null;
+         this.send(response);
       }
    }
    private setZoomFactor(newZoomFactor: number) {

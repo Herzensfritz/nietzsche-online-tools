@@ -1,5 +1,5 @@
 <h3>{{title}}</h3>
-<action-tab [send]="send" [removeWord]="removeWord" [actions]="actions" [words]="selectedWords"></action-tab>
+<action-tab [send]="send" [disposeOldResultMessage]="disposeOldResultMessage" [removeWord]="removeWord" [actions]="actions" [words]="selectedWords"></action-tab>
 <div id="navi">
    <button (click)="setZoomFactor(zoomFactor+0.2)">+</button>
    <button (click)="setZoomFactor(zoomFactor-0.2)">-</button>
@@ -7,6 +7,17 @@
    <label>find:<input [(ngModel)]="findText" (change)="updateWords()" (keydown.enter)="addWords()" type="string"/></label>
    <button (click)="resetFindText()" *ngIf="words">{{ words.length }} words</button>
    <button (click)="removeWords()"  *ngIf="selectedWords.length > 0">remove selected {{selectedWords.length}} word(s)</button>
+   <select *ngIf="actions && actions.tasks" (change)="setValueToProperty($event.target.value, 'current_task')">
+      <option *ngFor="let task of actions.tasks" [ngValue]="task">{{task}}</option>
+   </select>
+   <button *ngIf="actions && actions.tasks && current_task" (click)="taskDone()">Done</button>
+   <select  *ngIf="potentialDoubleLines" (change)="updatePotentialDoubleWords($event.target.value)">
+      <option *ngFor="let line of potentialDoubleLines" [value]="line.id">{{line.id}}</option>
+   </select>
+   <select *ngIf="potentialDoubleWords" (change)="showPotentialDoubles($event.target.value)">
+      <option value=""></option>
+      <option *ngFor="let word of potentialDoubleWords" [value]="word.id">{{word.id}}: {{word.text}}</option>
+   </select>
    <input type="checkbox" *ngIf="faksimile" [(ngModel)]="showFaksimile" [checked]="showFaksimile" />show faksimile
    <span *ngIf="!showFaksimile">
       <input type="checkbox" (change)="toggleShowTextFieldOnly()" [checked]="savedTextfield !== null" />show margins
@@ -17,15 +28,29 @@
    </span>
 </div>
 <div id="page" [ngStyle]="{'overflow': assignHiddenClass()}" *ngIf="svg" [attr.height]="max_page_height">
-   <div id="margin">
+   <div *ngIf="faksimile && showFaksimile">
+      <page-view [assignClass]="assignClass" [max_height]="max_page_height"
+           [findText]="findText" [first_image]="svg" 
+           [first_lines]="svg_lines" [first_words]="words"  
+           [second_image]="faksimile" [second_words]="faksimile_words" 
+           [second_lines]="faksimile_lines"
+           [preferPrimaryUrl]="false" [zoomFactor]="zoomFactor"></page-view>
+   </div>
+   <div *ngIf="!showFaksimile">
+      <page-view [assignClass]="assignClass" [max_height]="max_page_height"
+           [findText]="findText" [first_image]="svg" 
+           [first_lines]="svg_lines" [first_words]="words"  
+           [preferPrimaryUrl]="false" [zoomFactor]="zoomFactor"></page-view>
+   </div>
+   <!--<div id="margin">
       <margin-field [text_field]="svg.text_field" [lines]="svg_lines" [zoomFactor]="zoomFactor"></margin-field>
    </div>
    <div id="gap"></div>
    <div id="textfield">
-      <text-field [image]="svg" [findText]="findText" [words]="words" [zoomFactor]="zoomFactor" [assignClass]="assignClass"></text-field>
+      <text-field [preferPrimaryUrl]="false" [image]="svg" [findText]="findText" [words]="words" [zoomFactor]="zoomFactor" [assignClass]="assignClass"></text-field>
    </div>
    <div id="gap"></div>
    <div id="textfield" *ngIf="faksimile && showFaksimile">
-      <text-field [image]="faksimile" [findText]="findText" [words]="faksimile_words" [zoomFactor]="zoomFactor"></text-field>
-   </div>
+      <text-field [preferPrimaryUrl]="false" [image]="faksimile" [findText]="findText" [words]="faksimile_words" [zoomFactor]="zoomFactor"></text-field>
+   </div>-->
 </div>

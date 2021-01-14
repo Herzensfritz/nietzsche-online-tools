@@ -17,28 +17,25 @@
   fill: #FF00FF;
   opacity: 0.3;
 }
-.textfield .border {
-  stroke: #e2fa00;
-  stroke-width:5;
-  opacity: 0.3;
+.textfield .highlight_foreign_text {
+  fill: blue;
+  opacity: 0.5;
 }
 .textfield .unhighlighted {
   opacity: 0.0;
 }
-.textfield .howered_line {
-  fill: #e2fa00;
+.textfield .highlight_path {
+   stroke: red;
+   fill: none;
+   stroke-width: 0.2;
+}
+.textfield .unhighlighted_path {
+   stroke: none;
+   fill: none;
+   opacity: 0.0;
+}
+.textfield .border {
+  stroke: #e2fa00;
+  stroke-width:5;
   opacity: 0.3;
-}
-
-.textfield .same_word {
-  fill: #c9fac5;
-  opacity: 0.3;
-}
-
-.text_fadeout {
-  fill: #a4a4a4;
-}
-
-.hover {
-  transform: scale(1.5);
 }

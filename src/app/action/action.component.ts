@@ -2,6 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import {Actions, Requirement, Response, ResponseHandler, EditableWord} from '../models/models';
 import { PageViewService } from '../page-view/page-view.service';
 
+const TIMESTAMP_NOT_SET: number = -1;
+
 @Component({
   selector: 'action-tab',
   templateUrl: './action.component.html',
@@ -10,6 +12,7 @@ import { PageViewService } from '../page-view/page-view.service';
 export class ActionComponent implements OnInit {
    @Input() actions: Actions;
    @Input() send: (response: Response) => void;
+   @Input() disposeOldResultMessage: () => void;
    @Input() removeWord: (word: EditableWord) => void;
    @Input() words: EditableWord[];
    response_handler: ResponseHandler; 
@@ -18,6 +21,9 @@ export class ActionComponent implements OnInit {
 
    ngOnInit() { }
 
+   private addDeletionPath(word: EditableWord, deletion_path: string){
+      word.deletion_path = deletion_path;
+   }
    private resetResponseHandler(){
       this.response_handler = null;
    }
@@ -34,8 +40,12 @@ export class ActionComponent implements OnInit {
          this.send(response);
       }
    }
-   private disposeOldResultMessage(){
-      this.actions.result = null;
+   private changePage(new_target_file: string){
+      let response_handler: ResponseHandler = { action_name: 'reload', description: 'change page for edition'};
+      let response: Response = { 'target_file': new_target_file, 'date_stamp': TIMESTAMP_NOT_SET,
+                                 'response_handler': response_handler, 'words': [] }
+      this.disposeOldResultMessage();
+      this.send(response);
    }
    private updateWord(wordA: EditableWord, new_id: number){
       wordA.old_id = wordA.id;

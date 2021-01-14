@@ -1,9 +1,11 @@
-import { Image, Line, IdWord } from '../page-view/models';
+import { Image, Line, Word } from '../page-view/models';
 
 export interface Actions {
    target_file: string;
    date_stamp: number;
    response_handlers: ResponseHandler[];
+   tasks?: string[];
+   pages?: string[];
    result?: string;
 }
 export interface MyData {
@@ -14,6 +16,7 @@ export interface MyData {
    lines: Line[];
    faksimile?: Image;
    faksimile_positions?: EditableWord[];
+   faksimile_lines?: Line[];
    actions: Actions;
 }
 export interface Response {
@@ -21,6 +24,7 @@ export interface Response {
    date_stamp: number;
    response_handler: ResponseHandler;
    words: EditableWord[];
+   task?: string;
 }
 export interface ResponseHandler{
    action_name: string;
@@ -39,7 +43,7 @@ export interface TextField {
    top: number;
    bottom: number;
 }
-export interface EditableWord extends IdWord { 
+export interface EditableWord extends Word { 
    id: number;
    text: string;
    edited_text?: string;
@@ -52,6 +56,8 @@ export interface EditableWord extends IdWord {
    fp_id?: string;
    old_id?: number;
    deleted: boolean;
+   deletion_path?: string;
+   paths_near_word?: string[];
    transform?: string; 
    earlier_version?: string;
    overwrites_word?: string;
